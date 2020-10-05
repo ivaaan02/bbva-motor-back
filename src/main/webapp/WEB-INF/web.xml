@@ -1,142 +1,166 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
 <web-app xmlns="http://java.sun.com/xml/ns/javaee"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="2.5"
-         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="2.5"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
 
-    <listener>
-        <listener-class>com.fga.listeners.PropertiesLoaderListener</listener-class>
-    </listener>
+	<listener>
+		<listener-class>com.fga.listeners.PropertiesLoaderListener</listener-class>
+	</listener>
 
-    <context-param>
-        <param-name>appProperties</param-name>
-        <param-value>app.properties,fga.properties</param-value>
-    </context-param>
+	<context-param>
+		<param-name>appProperties</param-name>
+		<param-value>app.properties,fga.properties</param-value>
+	</context-param>
 
-    <listener>
-        <listener-class>com.bbva.config.ObjectifyLoader</listener-class>
-    </listener>
+	<listener>
+		<listener-class>com.bbva.config.ObjectifyLoader</listener-class>
+	</listener>
 
-    <filter>
-        <filter-name>FilterManager</filter-name>
-        <filter-class>com.fga.filters.manager.FilterManager</filter-class>
-        <init-param>
-            <description>Filers order execute for FilterManager</description>
-            <param-name>order</param-name>
-            <param-value>com.fga.filters.AuthenticationFilter</param-value>
-        </init-param>
-        <init-param>
-            <description>Indicate if OAuth filter is active</description>
-            <param-name>oauthFilter</param-name>
-            <param-value>false</param-value>
-        </init-param>
-    </filter>
-    <filter-mapping>
-        <filter-name>FilterManager</filter-name>
-        <servlet-name>RestServlet</servlet-name>
-        <servlet-name>FgaDiscoveryServlet</servlet-name>
-        <servlet-name>LogoutServlet</servlet-name>
-        <url-pattern>/</url-pattern>
-        <dispatcher>REQUEST</dispatcher>
-    </filter-mapping>
+	<filter>
+		<filter-name>FilterManager</filter-name>
+		<filter-class>com.fga.filters.manager.FilterManager</filter-class>
+		<init-param>
+			<description>Filers order execute for FilterManager</description>
+			<param-name>order</param-name>
+			<param-value>com.fga.filters.AuthenticationFilter</param-value>
+		</init-param>
+		<init-param>
+			<description>Indicate if OAuth filter is active</description>
+			<param-name>oauthFilter</param-name>
+			<param-value>false</param-value>
+		</init-param>
+	</filter>
+	<filter-mapping>
+		<filter-name>FilterManager</filter-name>
+		<servlet-name>RestServlet</servlet-name>
+		<servlet-name>FgaDiscoveryServlet</servlet-name>
+		<servlet-name>LogoutServlet</servlet-name>
+		<url-pattern>/v1/*</url-pattern>
+		<url-pattern>/api</url-pattern>
+		<dispatcher>REQUEST</dispatcher>
+	</filter-mapping>
 
-    <!-- Rest Servlet -->
-    <servlet>
-        <servlet-name>RestServlet</servlet-name>
-        <servlet-class>org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher</servlet-class>
-        <init-param>
-            <param-name>javax.ws.rs.Application</param-name>
-            <param-value>com.bbva.config.App</param-value>
-        </init-param>
-        <init-param>
-            <param-name>resteasy.servlet.mapping.prefix</param-name>
-            <param-value>/v1</param-value>
-        </init-param>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>RestServlet</servlet-name>
-        <url-pattern>/v1/*</url-pattern>
-    </servlet-mapping>
+	<servlet>
+		<servlet-name>jersey-servlet</servlet-name>
+		<servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
+		<init-param>
+			<param-name>jersey.config.server.provider.packages</param-name>
+			<param-value>io.swagger.jaxrs.listing,com.bbva.aurantia.ws</param-value>
+		</init-param>
+		<init-param>
+			<param-name>jersey.config.server.provider.classnames</param-name>
+			<param-value>
+<!-- 				org.glassfish.jersey.media.multipart.MultiPartFeature, -->
+<!-- 				com.bbva.aurantia.config.ObjectMapperContextResolver, -->
+<!-- 				com.bbva.aurantia.config.BaseExceptionMapper, -->
+<!-- 				com.bbva.aurantia.config.GenericExceptionMapper -->
+			</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>jersey-servlet</servlet-name>
+		<url-pattern>/v1/*</url-pattern>
+	</servlet-mapping>
 
-    <!-- Services Discovery -->
-    <servlet>
-        <servlet-name>FgaDiscoveryServlet</servlet-name>
-        <servlet-class>com.fga.servlets.AnnotationScannerServlet</servlet-class>
-        <init-param>
-            <param-name>wspackage</param-name>
-            <param-value>com.bbva.ws.impl</param-value>
-        </init-param>
-        <init-param>
-            <param-name>wsBasePath</param-name>
-            <param-value>/v1</param-value>
-        </init-param>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>FgaDiscoveryServlet</servlet-name>
-        <url-pattern>/fga/discovery</url-pattern>
-    </servlet-mapping>
+	<!-- Rest Servlet -->
+	<servlet>
+		<servlet-name>RestServlet</servlet-name>
+		<servlet-class>org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher</servlet-class>
+		<init-param>
+			<param-name>javax.ws.rs.Application</param-name>
+			<param-value>com.bbva.config.App</param-value>
+		</init-param>
+		<init-param>
+			<param-name>resteasy.servlet.mapping.prefix</param-name>
+			<param-value>/v1</param-value>
+		</init-param>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>RestServlet</servlet-name>
+		<url-pattern>/v1/*</url-pattern>
+	</servlet-mapping>
+
+	<!-- Services Discovery -->
+	<servlet>
+		<servlet-name>FgaDiscoveryServlet</servlet-name>
+		<servlet-class>com.fga.servlets.AnnotationScannerServlet</servlet-class>
+		<init-param>
+			<param-name>wspackage</param-name>
+			<param-value>com.bbva.ws.impl</param-value>
+		</init-param>
+		<init-param>
+			<param-name>wsBasePath</param-name>
+			<param-value>/v1</param-value>
+		</init-param>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>FgaDiscoveryServlet</servlet-name>
+		<url-pattern>/fga/discovery</url-pattern>
+	</servlet-mapping>
 
 
-    <!-- GenericCache Task -->
-    <servlet>
-        <servlet-name>genericCacheTask</servlet-name>
-        <servlet-class>com.fga.tasks.impl.GenericCacheTask</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>genericCacheTask</servlet-name>
-        <url-pattern>/task/genericCacheTask</url-pattern>
-    </servlet-mapping>
+	<!-- GenericCache Task -->
+	<servlet>
+		<servlet-name>genericCacheTask</servlet-name>
+		<servlet-class>com.fga.tasks.impl.GenericCacheTask</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>genericCacheTask</servlet-name>
+		<url-pattern>/task/genericCacheTask</url-pattern>
+	</servlet-mapping>
 
-    <!-- Logout servlet -->
-    <servlet>
-        <servlet-name>LogoutServlet</servlet-name>
-        <servlet-class>com.fga.servlets.LogoutServlet</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>LogoutServlet</servlet-name>
-        <url-pattern>/Logout</url-pattern>
-    </servlet-mapping>
+	<!-- Logout servlet -->
+	<servlet>
+		<servlet-name>LogoutServlet</servlet-name>
+		<servlet-class>com.fga.servlets.LogoutServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>LogoutServlet</servlet-name>
+		<url-pattern>/Logout</url-pattern>
+	</servlet-mapping>
 
-    <!-- Admin Servlet -->
-    <servlet>
-        <servlet-name>AdminServlet</servlet-name>
-        <servlet-class>com.fga.admin.servlets.AdminServlet</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>AdminServlet</servlet-name>
-        <url-pattern>/fga/admin</url-pattern>
-    </servlet-mapping>
+	<!-- Admin Servlet -->
+	<servlet>
+		<servlet-name>AdminServlet</servlet-name>
+		<servlet-class>com.fga.admin.servlets.AdminServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>AdminServlet</servlet-name>
+		<url-pattern>/fga/admin</url-pattern>
+	</servlet-mapping>
 
-    <!-- SaveLogInfo Task -->
-    <servlet>
-        <servlet-name>SaveLogInfoTask</servlet-name>
-        <servlet-class>com.fga.tasks.impl.SaveLogInfoTask</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>SaveLogInfoTask</servlet-name>
-        <url-pattern>/task/saveLogInfoTask</url-pattern>
-    </servlet-mapping>
+	<!-- SaveLogInfo Task -->
+	<servlet>
+		<servlet-name>SaveLogInfoTask</servlet-name>
+		<servlet-class>com.fga.tasks.impl.SaveLogInfoTask</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>SaveLogInfoTask</servlet-name>
+		<url-pattern>/task/saveLogInfoTask</url-pattern>
+	</servlet-mapping>
 
-    <!-- Security for admins -->
-    <security-constraint>
-        <web-resource-collection>
-            <web-resource-name>admins</web-resource-name>
-            <url-pattern>/fga/admin/*</url-pattern>
-            <url-pattern>/task/*</url-pattern>
-            <url-pattern>/cron/*</url-pattern>
-        </web-resource-collection>
-        <auth-constraint>
-            <role-name>admin</role-name>
-        </auth-constraint>
-    </security-constraint>
+	<!-- Security for admins -->
+	<security-constraint>
+		<web-resource-collection>
+			<web-resource-name>admins</web-resource-name>
+			<url-pattern>/fga/admin/*</url-pattern>
+			<url-pattern>/task/*</url-pattern>
+			<url-pattern>/cron/*</url-pattern>
+		</web-resource-collection>
+		<auth-constraint>
+			<role-name>admin</role-name>
+		</auth-constraint>
+	</security-constraint>
 
-    <!-- Secure http -->
-    <security-constraint>
-        <web-resource-collection>
-            <web-resource-name>secure</web-resource-name>
-            <url-pattern>/*</url-pattern>
-        </web-resource-collection>
-        <user-data-constraint>
-            <transport-guarantee>CONFIDENTIAL</transport-guarantee>
-        </user-data-constraint>
-    </security-constraint>
+	<!-- Secure http -->
+	<security-constraint>
+		<web-resource-collection>
+			<web-resource-name>secure</web-resource-name>
+			<url-pattern>/*</url-pattern>
+		</web-resource-collection>
+		<user-data-constraint>
+			<transport-guarantee>CONFIDENTIAL</transport-guarantee>
+		</user-data-constraint>
+	</security-constraint>
 </web-app>

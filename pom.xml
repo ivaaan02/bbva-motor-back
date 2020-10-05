@@ -76,6 +76,7 @@
 		<maven.enforcer.plugin.version>3.0.0-M2</maven.enforcer.plugin.version>
 		<maven.surefire.plugin.version>3.0.0-M3</maven.surefire.plugin.version>
 		<maven.jacoco.plugin.version>0.8.5</maven.jacoco.plugin.version>
+		<jersey2.version>2.31</jersey2.version>
 	</properties>
 
 	<repositories>
@@ -154,6 +155,41 @@
 			<version>v3-rev110-1.23.0</version>
 		</dependency>
 		<!-- DRIVE TEST -->
+
+		<!-- Jersey 2.31 -->
+		<dependency>
+			<groupId>org.glassfish.jersey.containers</groupId>
+			<artifactId>jersey-container-servlet</artifactId>
+			<version>${jersey2.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.glassfish.jersey.core</groupId>
+			<artifactId>jersey-server</artifactId>
+			<version>${jersey2.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.glassfish.jersey.core</groupId>
+			<artifactId>jersey-client</artifactId>
+			<version>${jersey2.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.glassfish.jersey.media</groupId>
+			<artifactId>jersey-media-multipart</artifactId>
+			<version>${jersey2.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.glassfish.jersey.media</groupId>
+			<artifactId>jersey-media-json-jackson</artifactId>
+			<version>${jersey2.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.glassfish.jersey.ext</groupId>
+			<artifactId>jersey-bean-validation</artifactId>
+			<version>${jersey2.version}</version>
+		</dependency>
+
 	</dependencies>
 
 	<build>
