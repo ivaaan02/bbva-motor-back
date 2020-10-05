@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<artifactId>gdrivetest</artifactId>
+	<packaging>war</packaging>
+	<version>1-0-0</version>
+
+	<name>gDriveTest</name>
+	<description>BBVA Google AppEngine Backend gDriveTest</description>
+
+	<parent>
+		<groupId>com.bbva</groupId>
+		<artifactId>fga-back-template</artifactId>
+		<version>4.0.0</version>
+	</parent>
+
+	<properties>
+		<!-- Common configuration -->
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<appengine.target.version>1.9.81</appengine.target.version>
+		<gae.port>8080</gae.port>
+		<gae.debug.port>8888</gae.debug.port>
+
+		<!-- Java version -->
+		<java.version>1.8</java.version>
+
+		<!-- If this property is commented, the appengine version is the date + 
+			the revision from GIT -->
+		<appengine.app.version>1-0-0</appengine.app.version>
+		<appengine.deploy.promote>false</appengine.deploy.promote>
+
+		<!-- Applications identifiers -->
+		<dev.appengine.app.id>gDriveTest</dev.appengine.app.id>
+		<au.appengine.app.id>au-bbva-app-id</au.appengine.app.id>
+		<pr.appengine.app.id>bbva-app-id</pr.appengine.app.id>
+
+		<!-- Environments -->
+		<local.bbva.environment>local</local.bbva.environment>
+		<dev.bbva.environment>dev.bbva.com</dev.bbva.environment>
+		<au.bbva.environment>au-bbva.com</au.bbva.environment>
+		<pr.bbva.environment>bbva.com</pr.bbva.environment>
+
+		<!-- Swagger host -->
+		<local.bbva.swagger.host>localhost:8080</local.bbva.swagger.host>
+		<dev.bbva.swagger.host>${dev.appengine.app.id}.appspot.com</dev.bbva.swagger.host>
+		<au.bbva.swagger.host>${au.appengine.app.id}.appspot.com</au.bbva.swagger.host>
+		<pr.bbva.swagger.host>${pr.appengine.app.id}.appspot.com</pr.bbva.swagger.host>
+
+		<!-- Swagger credentials -->
+		<dev.bbva.swagger.clientid>923825376202-gnjka6hi9mk7o3vd3gcn3eire40pim5f.apps.googleusercontent.com</dev.bbva.swagger.clientid>
+
+		<!-- Dependencies configuration -->
+		<fga.core.version>9.13.14</fga.core.version>
+		<fga.admin.version>0.0.73</fga.admin.version>
+		<objectify.version>4.1.3</objectify.version>
+
+		<!-- RestEasy 3.0.19.Final is the last one supported for Java 7 -->
+		<resteasy.version>3.5.1.Final</resteasy.version>
+
+		<junit.version>5.3.1</junit.version>
+		<mockito.version>1.10.19</mockito.version>
+
+		<!-- Plugins versions -->
+		<appengine.maven.plugin.version>2.1.0</appengine.maven.plugin.version>
+		<maven.minimum.version>3.1.0</maven.minimum.version>
+		<maven.compiler.plugin.version>3.8.1</maven.compiler.plugin.version>
+		<maven.replacer.plugin.version>1.5.3</maven.replacer.plugin.version>
+		<maven.war.plugin.version>3.2.3</maven.war.plugin.version>
+		<maven.resources.plugin.version>3.1.0</maven.resources.plugin.version>
+		<maven.clean.plugin.version>3.1.0</maven.clean.plugin.version>
+		<maven.dependency.plugin.version>3.1.1</maven.dependency.plugin.version>
+		<maven.enforcer.plugin.version>3.0.0-M2</maven.enforcer.plugin.version>
+		<maven.surefire.plugin.version>3.0.0-M3</maven.surefire.plugin.version>
+		<maven.jacoco.plugin.version>0.8.5</maven.jacoco.plugin.version>
+	</properties>
+
+	<repositories>
+		<repository>
+			<id>gcp-global-mvn-repository</id>
+			<name>gcp-global-mvn-repository</name>
+			<url>https://globaldevtools.bbva.com/artifactory-api/gcp-global-mvn-repository</url>
+		</repository>
+	</repositories>
+
+	<dependencies>
+
+		<!-- You can remove it if your app doesn't use Datastore with Objectify -->
+		<dependency>
+			<groupId>com.googlecode.objectify</groupId>
+			<artifactId>objectify</artifactId>
+			<version>${objectify.version}</version>
+		</dependency>
+
+		<!-- RestEasy -->
+		<dependency>
+			<groupId>org.jboss.resteasy</groupId>
+			<artifactId>resteasy-jaxrs</artifactId>
+			<version>${resteasy.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.jboss.resteasy</groupId>
+			<artifactId>resteasy-jackson2-provider</artifactId>
+			<version>${resteasy.version}</version>
+		</dependency>
+
+		<!-- Test Dependencies -->
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-api</artifactId>
+			<version>${junit.version}</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-all</artifactId>
+			<version>${mockito.version}</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>com.google.appengine</groupId>
+			<artifactId>appengine-testing</artifactId>
+			<version>${appengine.target.version}</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>com.google.appengine</groupId>
+			<artifactId>appengine-api-stubs</artifactId>
+			<version>${appengine.target.version}</version>
+			<scope>test</scope>
+		</dependency>
+
+		<!-- DRIVE TEST -->
+		<dependency>
+			<groupId>com.google.api-client</groupId>
+			<artifactId>google-api-client</artifactId>
+			<version>1.23.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.google.oauth-client</groupId>
+			<artifactId>google-oauth-client-jetty</artifactId>
+			<version>1.23.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.google.apis</groupId>
+			<artifactId>google-api-services-drive</artifactId>
+			<version>v3-rev110-1.23.0</version>
+		</dependency>
+		<!-- DRIVE TEST -->
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>${maven.jacoco.plugin.version}</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>prepare-agent</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>report</id>
+						<phase>test</phase>
+						<goals>
+							<goal>report</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+</project>

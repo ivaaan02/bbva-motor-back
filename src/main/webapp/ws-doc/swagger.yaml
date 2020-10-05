@@ -1,0 +1,71 @@
+swagger: '2.0'
+info:
+  version: 1.0.0
+  title: BBVA Google App
+  contact:
+    email: email@bbva.com
+host: @@bbva.swagger.host@@
+basePath: /v1
+tags:
+  - name: Example
+schemes:
+  - https
+paths:
+  '/hello/{name}':
+    get:
+      tags:
+        - Example
+      summary: GET operation example
+      operationId: get
+      produces:
+        - application/json;charset=UTF-8
+      parameters:
+        - name: name
+          in: path
+          description: User name
+          required: true
+          type: string
+        - name: surname
+          in: query
+          description: User surname
+          required: true
+          type: string
+      responses:
+        200:
+          description: Successful operation
+          schema:
+            $ref: '#/definitions/ResponseEntity'
+      security:
+        - google_auth:
+          - 'email'
+securityDefinitions:
+  google_auth:
+    type: oauth2
+    authorizationUrl: 'https://accounts.google.com/o/oauth2/auth'
+    flow: implicit
+    scopes:
+      email: Get your user's Google account email address
+
+definitions:
+  ExampleBean:
+    type: object
+    properties:
+      text:
+        type: string
+      name:
+        type: string
+      surname:
+        type: string
+    xml:
+      name: ExampleBean
+  ResponseEntity:
+    type: object
+    properties:
+      code:
+        type: string
+      message:
+        type: string
+      data:
+        $ref: '#/definitions/ExampleBean'
+    xml:
+      name: ResponseEntity

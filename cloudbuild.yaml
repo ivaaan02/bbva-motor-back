@@ -1,0 +1,24 @@
+steps:
+  - name: 'docker:19.03'
+    id: 'Artifactory Registry authentication'
+    entrypoint: '/bin/sh'
+    args: ['-c', 'docker login -u=$$BOT_GCP_READER_USER -p=$$BOT_GCP_READER_PASSWORD globaldevtools.bbva.com:5000']
+    secretEnv: ['BOT_GCP_READER_USER', 'BOT_GCP_READER_PASSWORD']
+
+  - name: 'globaldevtools.bbva.com:5000/gcp/arch/bbva-fga-cli-ng:latest'
+    id: 'Application deployment cli'
+    entrypoint: 'bash'
+    args: [ '-c','fga-cli.py deploy all --env=${_BBVA_GAE_ENV} -- -Dmaven.test.skip=true -Dapp.deploy.promote=false']
+    env:
+      - 'CLI_MODE=cloud_build'
+      - 'MAVEN_OPTS=-Duser.home=/builder/home'
+    secretEnv: ['BOT_GCP_READER_USER','BOT_GCP_READER_PASSWORD']
+
+secrets:
+  - kmsKeyName: 'projects/bbva-devtools-gcp/locations/global/keyRings/gcp-cicd-pipelines/cryptoKeys/artifactory-key'
+    secretEnv:
+      BOT_GCP_READER_USER: CiQAi2jB8KqP7vJ/2MMY/fMKnzGsBtgHB+4dG7d6vUz4VCb2UzcSNwDHBdZQ2rJVWGlRkz5X63+LKrKKXTtvn5n+nBpOEj55kw953Wnymq1KceUgBoTCcCHefF1Rc18=
+      BOT_GCP_READER_PASSWORD: CiQAi2jB8OfFmreW8f9pppD0YE5KuxrEO3B0QnLaADFNenRaze0ScwDHBdZQEFQzc26Nr4NAQLgwS3t77Nmzt2eT9NQUD89uj4zroAM2sSDShn7F0ZxWigpmuuwzBOiVd2RzDHmy3c8OOHIAa8XqxUMK5lqxfHRFxiT1322YtKZuvJilu0zwrEABG2xunb7zSSAB5OOWaIC9zG8=
+
+logsBucket: 'gs://$PROJECT_ID-cloudbuild-logs'
+timeout: "1200s"
